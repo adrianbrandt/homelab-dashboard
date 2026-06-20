@@ -1,0 +1,49 @@
+{
+  "name": "homelab-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A single pane of glass for your homelab — service widgets + system monitoring in one self-hosted dashboard.",
+  "license": "MIT",
+  "author": "Adrian Sleire Brandt",
+  "homepage": "https://github.com/adrianbrandt/homelab-dashboard#readme",
+  "repository": { "type": "git", "url": "https://github.com/adrianbrandt/homelab-dashboard.git" },
+  "bugs": { "url": "https://github.com/adrianbrandt/homelab-dashboard/issues" },
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "build:shared": "npm run build -w @dashboard/shared",
+    "build": "npm run build:shared && npm run build -w @dashboard/server && npm run build -w @dashboard/web",
+    "dev": "npm run dev -w @dashboard/server & npm run dev -w @dashboard/web",
+    "start": "node server/dist/index.js",
+    "test": "npm run build:shared && npm run test -w @dashboard/server && npm run test -w @dashboard/web",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepare": "husky || true"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.4.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.2",
+    "husky": "9.1.7",
+    "lint-staged": "17.0.7",
+    "prettier": "3.8.4",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.0"
+  }
+}

@@ -1,0 +1,40 @@
+# Copy to config.yaml and mount at /config/config.yaml (CONFIG_PATH).
+# Secrets: never inline — use double-brace env refs e.g. MYKEY (resolved at startup).
+settings:
+  title: Homelab
+
+hosts:
+  - id: homelab
+    label: homelab
+    source: { type: prometheus, instance: homelab }
+    links:
+      - { label: Grafana, url: https://grafana.example.com }
+  - id: kvm4
+    label: kvm4
+    source: { type: prometheus, instance: kvm4 }
+  - id: nas
+    label: nas
+    kind: storage
+    source: { type: prometheus, instance: homelab, mountpoint: /mnt/nas-media }
+    links:
+      - { label: UniFi, url: https://192.168.1.20 }
+
+groups:
+  - name: Media
+    widgets:
+      - type: sonarr
+        url: http://192.168.1.10:8989
+        key: "{{SONARR_KEY}}"
+      - type: radarr
+        url: http://192.168.1.10:7878
+        key: "{{RADARR_KEY}}"
+  - name: Infra
+    widgets:
+      - type: adguard
+        url: http://192.168.1.10:3001
+        username: admin
+        password: "{{ADGUARD_PASS}}"
+      - type: bookmarks
+        items:
+          - { label: Portainer, url: https://portainer.example.com }
+          - { label: Grafana, url: https://grafana.example.com }

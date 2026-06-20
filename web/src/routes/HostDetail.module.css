@@ -1,0 +1,94 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+}
+.heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.back {
+  color: var(--muted, #aaa);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--border, #444);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.toggle button {
+  background: transparent;
+  color: var(--muted, #aaa);
+  border: 0;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  font: inherit;
+}
+.toggle button.on {
+  background: var(--accent, #3aa88a);
+  color: #04231c;
+  font-weight: 600;
+}
+.body {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 720px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+.panel {
+  background: var(--panel, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.ptitle {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted, #888);
+  margin-bottom: 0.4rem;
+}
+.kv {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid var(--border, #2a2a2a);
+  font-size: 0.85rem;
+}
+.kv span:first-child {
+  color: var(--muted, #888);
+}
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.links a {
+  color: var(--accent, #7ddcc4);
+  text-decoration: none;
+  border: 1px solid var(--border, #3a8);
+  border-radius: 14px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.muted {
+  color: var(--muted, #888);
+}

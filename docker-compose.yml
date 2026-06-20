@@ -1,0 +1,27 @@
+services:
+  dashboard:
+    build: .
+    container_name: homelab-dashboard
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE: prometheus
+      PROMETHEUS_URL: http://prometheus:9090
+      PORT: "3001"
+      CONFIG_PATH: /config/config.yaml
+    # Secrets ({{SONARR_KEY}}/{{RADARR_KEY}}/{{ADGUARD_PASS}}) — box-only, NOT committed, NOT rsynced.
+    env_file:
+      - .env
+    volumes:
+      # Real config (hosts + service widgets); box-only, NOT committed, NOT rsynced.
+      - ./config:/config:ro
+    ports:
+      # Bind to loopback only; put a reverse proxy in front for TLS + your own auth
+      - "127.0.0.1:3003:3001"
+    networks:
+      - monitoring
+
+networks:
+  # external net created by the monitoring stack; lets us reach Prometheus as prometheus:9090
+  monitoring:
+    external: true
+    name: monitoring_monitoring

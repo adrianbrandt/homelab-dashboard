@@ -1,0 +1,6 @@
+.tile { display: flex; flex-direction: column; gap: 0.6rem; }
+.title { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+.metrics { display: flex; gap: 1.25rem; }
+.metric { display: flex; flex-direction: column; }
+.value { font-size: 1.35rem; font-variant-numeric: tabular-nums; color: var(--text); }
+.label { font-size: 0.75rem; color: var(--text-dim); }

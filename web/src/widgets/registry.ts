@@ -1,0 +1,12 @@
+import type { FC } from 'react';
+import { Bookmarks } from './Bookmarks.tsx';
+import { Sonarr } from './Sonarr.tsx';
+import { Radarr } from './Radarr.tsx';
+import { Adguard } from './Adguard.tsx';
+
+export const widgetRegistry = new Map<string, FC<{ data: unknown }>>([
+  ['bookmarks', Bookmarks as FC<{ data: unknown }>],
+  ['sonarr', Sonarr as FC<{ data: unknown }>],
+  ['radarr', Radarr as FC<{ data: unknown }>],
+  ['adguard', Adguard as FC<{ data: unknown }>],
+]);

@@ -1,0 +1,31 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border, #33302b);
+}
+.table th {
+  color: var(--text-dim, #a8a29e);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.name {
+  font-weight: 600;
+}
+.image {
+  color: var(--text-dim, #a8a29e);
+}
+.empty {
+  color: var(--text-faint, #78716c);
+}

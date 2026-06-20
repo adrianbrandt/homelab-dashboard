@@ -1,0 +1,50 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+  packages: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Derive version
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+      - name: Build amd64 image for smoke test
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: homelab-dashboard:smoke
+          build-args: APP_VERSION=${{ steps.ver.outputs.version }}
+      - name: Smoke test (mock mode)
+        run: |
+          docker run -d --name smoke -p 3001:3001 -e DATA_SOURCE=mock homelab-dashboard:smoke
+          for i in $(seq 1 20); do
+            if curl -fs localhost:3001/api/health; then ok=1; break; fi
+            sleep 1
+          done
+          test "${ok:-0}" = 1
+          curl -fs localhost:3001/api/health | grep -q '"status":"ok"'
+          curl -fs localhost:3001/api/hosts | grep -q '"hosts"'
+          docker rm -f smoke
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build + push multi-arch
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/adrianbrandt/homelab-dashboard:${{ steps.ver.outputs.version }}
+            ghcr.io/adrianbrandt/homelab-dashboard:latest
+          build-args: APP_VERSION=${{ steps.ver.outputs.version }}

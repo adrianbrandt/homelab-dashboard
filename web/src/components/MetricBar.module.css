@@ -1,0 +1,16 @@
+.metric { margin: 9px 0; }
+.label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.bar { height: 6px; border-radius: 4px; background: var(--track); overflow: hidden; }
+.fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ok-1), var(--ok-2));
+  transition: width 0.4s ease;
+}
+.warn { background: linear-gradient(90deg, var(--warn-1), var(--warn-2)); }

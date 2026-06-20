@@ -1,0 +1,33 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.card.down { opacity: 0.55; }
+.name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.unreachable {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--down);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.foot {
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--text-faint);
+  margin-top: 10px;
+  border-top: 1px solid var(--border-dim);
+  padding-top: 8px;
+}
