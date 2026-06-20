@@ -37,11 +37,14 @@ describe('MockDataSource', () => {
   });
 
   it('jitters values between calls', async () => {
-    const a = await ds.getHosts();
-    const b = await ds.getHosts();
-    // At least one CPU value should differ across polls (jitter is live).
-    const changed = a.some((h, i) => h.metrics.cpuPercent !== b[i].metrics.cpuPercent);
-    expect(changed).toBe(true);
+    // Sample several polls; jitter should make at least one host's CPU vary across them.
+    // (Two polls can rarely round to the same value for every host — sampling many makes
+    // this deterministic in practice without seeding the RNG.)
+    const polls = await Promise.all(Array.from({ length: 12 }, () => ds.getHosts()));
+    const anyVaries = polls[0].some(
+      (_, i) => new Set(polls.map((p) => p[i].metrics.cpuPercent)).size > 1,
+    );
+    expect(anyVaries).toBe(true);
   });
 });
 
