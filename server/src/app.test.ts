@@ -147,6 +147,52 @@ describe('spa fallback', () => {
   });
 });
 
+describe('auth /api/me', () => {
+  it('reports no user and not-required by default (provider none)', async () => {
+    const appConfig = loadConfig({ text: 'hosts: []' });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app).get('/api/me');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual({ user: null, required: false, logoutUrl: null });
+  });
+
+  it('reports the identity from the configured header (forward-header)', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: forward-header
+  preset: cloudflare
+  required: true
+`,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app)
+      .get('/api/me')
+      .set('Cf-Access-Authenticated-User-Email', 'me@example.com');
+    expect(res.body.data).toEqual({
+      user: 'me@example.com',
+      required: true,
+      logoutUrl: '/cdn-cgi/access/logout',
+    });
+  });
+
+  it('reports null user but required:true when the header is absent', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: forward-header
+  preset: cloudflare
+  required: true
+`,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app).get('/api/me');
+    expect(res.status).toBe(200);
+    expect(res.body.data.user).toBeNull();
+    expect(res.body.data.required).toBe(true);
+  });
+});
+
 describe('widget endpoints', () => {
   const text = `
 settings:

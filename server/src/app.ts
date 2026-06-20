@@ -9,13 +9,19 @@ import {
   type DataSource,
   type HostDetail,
   type HostsResponse,
+  type Identity,
   type LayoutResponse,
+  type MeResponse,
   type SeriesWindow,
 } from '@dashboard/shared';
 import { getDataSource } from './datasource/index.ts';
 import { loadConfig } from './config/load.ts';
 import type { AppConfig } from './config/schema.ts';
 import { getWidget, widgetInstances, runWidget } from './widgets/index.ts';
+import { resolveAuth } from './auth/presets.ts';
+import { getAuthProvider } from './auth/index.ts';
+
+type AuthedRequest = express.Request & { identity?: Identity | null };
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,8 +34,25 @@ export function createApp(
   const appConfig = opts.appConfig ?? loadConfig();
   const dataSource = opts.dataSource ?? getDataSource(appConfig.hosts);
 
+  const auth = resolveAuth(appConfig.auth);
+  const authProvider = getAuthProvider(auth);
+
+  // Resolve identity for every /api request; never throws.
+  app.use(API_BASE, (req, _res, next) => {
+    (req as AuthedRequest).identity = authProvider.resolve(req);
+    next();
+  });
+
   app.get(`${API_BASE}/health`, (_req, res) => {
     res.json({ status: 'ok', version: process.env.APP_VERSION ?? 'dev' });
+  });
+
+  app.get(`${API_BASE}/me`, (req, res) => {
+    const identity = (req as AuthedRequest).identity ?? null;
+    const body: ApiResponse<MeResponse> = {
+      data: { user: identity?.user ?? null, required: auth.required, logoutUrl: auth.logoutUrl },
+    };
+    res.json(body);
   });
 
   app.get(`${API_BASE}/hosts`, async (_req, res) => {
