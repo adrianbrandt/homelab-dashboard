@@ -4,6 +4,6 @@ dist/
 .DS_Store
 docs/
 .superpowers/
-config.yaml
-config/
+/config.yaml
+/config/
 .env
