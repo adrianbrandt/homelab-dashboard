@@ -31,13 +31,53 @@ export const widgetSchema = z.object({ id: z.string().optional(), type: z.string
 
 export const groupSchema = z.object({ name: z.string(), widgets: z.array(widgetSchema).default([]) });
 
-export const appConfigSchema = z.object({
-  settings: z.object({ title: z.string().default('Homelab') }).default({ title: 'Homelab' }),
-  hosts: z.array(hostSchema).default([]),
-  groups: z.array(groupSchema).default([]),
-});
+export const AUTH_PRESETS = [
+  'cloudflare',
+  'authelia',
+  'authentik',
+  'oauth2-proxy',
+  'tailscale',
+  'custom',
+] as const;
+
+export const authSchema = z
+  .object({
+    provider: z.enum(['none', 'forward-header']).default('none'),
+    preset: z.enum(AUTH_PRESETS).optional(),
+    required: z.boolean().default(false),
+    header: z.string().optional(),
+    trustedProxies: z.array(z.string()).optional(),
+    logoutUrl: z.string().optional(),
+  })
+  .default({ provider: 'none', required: false });
+
+export const appConfigSchema = z
+  .object({
+    settings: z.object({ title: z.string().default('Homelab') }).default({ title: 'Homelab' }),
+    auth: authSchema,
+    hosts: z.array(hostSchema).default([]),
+    groups: z.array(groupSchema).default([]),
+  })
+  .superRefine((cfg, ctx) => {
+    const a = cfg.auth;
+    if (a.provider === 'forward-header' && a.preset === 'custom' && !a.header) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['auth', 'header'],
+        message: 'header is required when preset is custom',
+      });
+    }
+    if (a.required && a.provider === 'none') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['auth', 'required'],
+        message: 'auth.required cannot be true when provider is none',
+      });
+    }
+  });
 
 export type AppConfig = z.infer<typeof appConfigSchema>;
+export type AuthConfig = z.infer<typeof authSchema>;
 export type HostConfig = z.infer<typeof hostSchema>;
 export type GroupConfig = z.infer<typeof groupSchema>;
 export type WidgetInstanceConfig = z.infer<typeof widgetSchema>;
