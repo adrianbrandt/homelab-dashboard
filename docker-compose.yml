@@ -1,6 +1,6 @@
 services:
   dashboard:
-    build: .
+    image: ghcr.io/adrianbrandt/homelab-dashboard:0.1.0
     container_name: homelab-dashboard
     restart: unless-stopped
     environment:
