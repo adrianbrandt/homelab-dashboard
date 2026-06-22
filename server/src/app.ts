@@ -55,6 +55,15 @@ export function createApp(
     res.json(body);
   });
 
+  // Gate the rest of the API. health + me are registered above and stay open.
+  app.use(API_BASE, (req, res, next) => {
+    if (auth.required && !(req as AuthedRequest).identity) {
+      res.status(401).json({ error: 'unauthenticated' });
+      return;
+    }
+    next();
+  });
+
   app.get(`${API_BASE}/hosts`, async (_req, res) => {
     const hosts = await dataSource.getHosts();
     const body: ApiResponse<HostsResponse> = {
