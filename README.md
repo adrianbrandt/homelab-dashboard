@@ -142,7 +142,32 @@ groups:
 
 ## Security model
 
-> **homelab-dashboard has no built-in authentication yet.** Do **not** expose it directly to the internet. Run it on your LAN, or put it behind your own reverse proxy + auth (Authelia / Authentik / Cloudflare Access / Caddy basic_auth / Tailscale). Secrets in `config.yaml` are resolved server-side via `{{ENV}}` and are never sent to the browser, but the dashboard itself is unauthenticated. Pluggable forward-auth (header trust) is on the [roadmap](ROADMAP.md).
+homelab-dashboard supports **pluggable app-level auth** by trusting an identity
+header set by your reverse proxy. By default it is **open** (`auth.provider: none`)
+— do not expose the default config directly to the internet.
+
+> ⚠️ **The identity header is unsigned.** Forward-header trust is an access
+> boundary **only when your proxy is the only thing that can reach the app** —
+> isolate the network or bind the app to the proxy. On a shared Docker network,
+> any sibling container can forge the header. For a cryptographic boundary that
+> is safe without isolation, Cloudflare Access JWT verification is planned
+> (`cf-access-jwt`, see [ROADMAP](ROADMAP.md)).
+
+Enable it in `config.yaml`:
+
+| `preset` | identity header | logout default |
+| --- | --- | --- |
+| `cloudflare` | `Cf-Access-Authenticated-User-Email` | `/cdn-cgi/access/logout` |
+| `authelia` | `Remote-Email` | — |
+| `authentik` | `Remote-Email` | — |
+| `oauth2-proxy` | `X-Forwarded-Email` | — |
+| `tailscale` | `Tailscale-User-Login` | — |
+| `custom` | _(set `header:` yourself)_ | — |
+
+Set `required: true` to make the app 401 unauthenticated API requests. The
+optional `trustedProxies` list restricts which TCP peer (your last-hop proxy,
+as a `/32` — not a whole subnet) may set the header. Secrets in `config.yaml`
+are resolved server-side via `{{ENV}}` and never reach the browser.
 
 See [SECURITY.md](SECURITY.md) for the full security posture and how to report vulnerabilities.
 

@@ -3,6 +3,26 @@
 settings:
   title: Homelab
 
+# --- Authentication (optional) ---------------------------------------------
+# By default the dashboard is OPEN (provider: none). app-level auth trusts an
+# identity header set by your reverse proxy / identity-aware proxy.
+#
+# The header is UNSIGNED. It is only an access boundary if your proxy is the
+# ONLY thing that can reach this app (isolate the network / bind to the proxy).
+# On a shared Docker network, sibling containers can forge it.
+#
+# auth:
+#   provider: forward-header        # none (default) | forward-header
+#   preset: cloudflare              # cloudflare | authelia | authentik | oauth2-proxy | tailscale | custom
+#   required: true                  # 401 the API when no identity is present
+#   # header: X-Forwarded-Email     # overrides the preset; REQUIRED when preset: custom.
+#   #                               # NOTE: point at a single-value header (an email/login),
+#   #                               # not a comma-joined one like Remote-Groups.
+#   # trustedProxies: ["10.20.0.2/32"]  # optional: the LAST-HOP proxy's address (a /32, not a subnet)
+#   # logoutUrl: /cdn-cgi/access/logout # optional; preset fills a sensible default
+auth:
+  provider: none
+
 hosts:
   - id: homelab
     label: homelab

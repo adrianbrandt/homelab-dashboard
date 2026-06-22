@@ -43,4 +43,30 @@ groups:
       delete process.env.SECRET_CANARY;
     }
   });
+
+  it('exposes identity only in /api/me, never in /api/layout', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: forward-header
+  preset: custom
+  header: X-Test-User
+groups:
+  - name: Media
+    widgets:
+      - type: bookmarks
+        items:
+          - { label: Sonarr, url: https://sonarr }
+`,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const email = 'leaktest@example.com';
+
+    const me = await request(app).get('/api/me').set('X-Test-User', email);
+    expect(me.body.data.user).toBe(email); // expected here
+
+    const layout = await request(app).get('/api/layout').set('X-Test-User', email);
+    expect(layout.status).toBe(200);
+    expect(JSON.stringify(layout.body)).not.toContain(email); // never here
+  });
 });

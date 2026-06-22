@@ -242,3 +242,13 @@ export interface AdguardData {
   blocked: number;
   blockedPct: number;
 }
+
+export interface Identity {
+  user: string;
+}
+
+export interface MeResponse {
+  user: string | null;
+  required: boolean;
+  logoutUrl: string | null;
+}

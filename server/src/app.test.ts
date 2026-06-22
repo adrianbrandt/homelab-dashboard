@@ -147,6 +147,102 @@ describe('spa fallback', () => {
   });
 });
 
+describe('auth /api/me', () => {
+  it('reports no user and not-required by default (provider none)', async () => {
+    const appConfig = loadConfig({ text: 'hosts: []' });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app).get('/api/me');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toEqual({ user: null, required: false, logoutUrl: null });
+  });
+
+  it('reports the identity from the configured header (forward-header)', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: forward-header
+  preset: cloudflare
+  required: true
+`,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app)
+      .get('/api/me')
+      .set('Cf-Access-Authenticated-User-Email', 'me@example.com');
+    expect(res.body.data).toEqual({
+      user: 'me@example.com',
+      required: true,
+      logoutUrl: '/cdn-cgi/access/logout',
+    });
+  });
+
+  it('reports null user but required:true when the header is absent', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: forward-header
+  preset: cloudflare
+  required: true
+`,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource() });
+    const res = await request(app).get('/api/me');
+    expect(res.status).toBe(200);
+    expect(res.body.data.user).toBeNull();
+    expect(res.body.data.required).toBe(true);
+  });
+});
+
+describe('auth enforcement (required: true)', () => {
+  const text = `
+auth:
+  provider: forward-header
+  preset: custom
+  header: X-Test-User
+  required: true
+groups:
+  - name: Media
+    widgets:
+      - type: bookmarks
+        items:
+          - { label: Sonarr, url: https://sonarr }
+`;
+  const build = () => createApp({ appConfig: loadConfig({ text }), dataSource: mockDataSource });
+
+  it('401s a data route without identity', async () => {
+    const res = await request(build()).get('/api/hosts');
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ error: 'unauthenticated' });
+  });
+
+  it('401s param routes without identity', async () => {
+    expect((await request(build()).get('/api/widget/0-0')).status).toBe(401);
+    expect((await request(build()).get('/api/hosts/homelab/series?window=1h')).status).toBe(401);
+  });
+
+  it('allows data routes with a valid identity header', async () => {
+    const res = await request(build()).get('/api/hosts').set('X-Test-User', 'me@example.com');
+    expect(res.status).toBe(200);
+    expect(res.body.data.hosts).toHaveLength(1);
+  });
+
+  it('keeps /api/health and /api/me open without identity', async () => {
+    expect((await request(build()).get('/api/health')).status).toBe(200);
+    expect((await request(build()).get('/api/me')).status).toBe(200);
+  });
+
+  it('still serves the SPA shell without identity', async () => {
+    const app = createApp({
+      appConfig: loadConfig({ text }),
+      dataSource: mockDataSource,
+      webDist: path.resolve(here, '../test-fixtures'),
+    });
+    const res = await request(app).get('/');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<!doctype html>');
+  });
+});
+
 describe('widget endpoints', () => {
   const text = `
 settings:

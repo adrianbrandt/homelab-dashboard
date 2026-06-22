@@ -18,11 +18,12 @@ Real service widgets on the M0 contract:
 
 Host-owned failure handling: `runWidget` wraps every widget fetch with an 8-second timeout; widget modules write only the happy path; `WidgetResult` carries `ok:true|false` so the UI renders a clean error tile instead of crashing.
 
-## 🔨 M2 — Productize *(in progress)*
+## ✅ M2 — Productize *(in progress)*
 
-1. **OSS release bundle** — public README, CONTRIBUTING guide, config reference, example config, published Docker image. *(active)*
-2. **Pluggable forward-auth** — trust the `Cf-Access-Authenticated-User-Email` header (or any equivalent header from a reverse proxy / identity-aware proxy) for app-level auth, so deployments behind a forward-auth layer get per-user identity without managing their own credentials.
-3. **Theming + layout polish** — CSS custom-property theme tokens, layout density options, mobile-friendly grid.
+1. ✅ **OSS release bundle** — public README, CONTRIBUTING guide, config reference, example config, published Docker image.
+2. ✅ **Pluggable forward-auth (M2.2)** — `auth:` config block with `provider: forward-header`; presets for Cloudflare Access, Authelia, Authentik, oauth2-proxy, Tailscale, and custom; `required` enforcement gate; `/api/me`; user chip + logout; blocked page. ⚠️ The identity header is unsigned — forward-header trust requires network isolation (only your proxy can reach the app).
+   - 🔨 **cf-access-jwt (M2.2b)** — cryptographic Cloudflare Access JWT verification. The only forward-auth mode that is safe without network isolation. *(next)*
+3. **Theming + layout polish (M2.3)** — CSS custom-property theme tokens, layout density options, mobile-friendly grid.
 
 ## Ongoing
 
