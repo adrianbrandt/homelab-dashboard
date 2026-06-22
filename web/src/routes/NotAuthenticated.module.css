@@ -1,0 +1,36 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.card {
+  max-width: 26rem;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background: var(--surface, #221f1a);
+  border: 1px solid var(--border, #3a352c);
+}
+
+.title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.body {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted, #b9b3a8);
+}
+
+.link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--accent, #c98a5e);
+  color: #1b1813;
+  font-weight: 600;
+  text-decoration: none;
+}
