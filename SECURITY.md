@@ -10,15 +10,24 @@ coordinated disclosure.
 
 ## Security posture (read before exposing this)
 
-> **homelab-dashboard has no built-in authentication yet.** Do **not** expose
-> it directly to the internet.
+**homelab-dashboard ships pluggable app-level auth (M2.2).** Forward-header
+auth is opt-in (`auth.provider: forward-header` in `config.yaml`); by default
+the dashboard is open (`provider: none`) — do **not** expose the default config
+directly to the internet.
 
-- Run it on your LAN, or put it behind your own reverse proxy + authentication
-  (Authelia, Authentik, Cloudflare Access, Caddy `basic_auth`, Tailscale, …).
-- Pluggable forward-auth (header trust) is on the [roadmap](ROADMAP.md); until
-  then, perimeter auth is your responsibility.
+- **Forward-header trust is not a cryptographic boundary.** The identity header
+  is unsigned, so it is only an access boundary when your proxy is the *only*
+  thing that can reach the app. On a shared Docker network, any sibling
+  container can forge the header — **network isolation is required**, not just
+  localhost-publishing.
+- For a cryptographic boundary that is safe without network isolation,
+  Cloudflare Access JWT verification (`cf-access-jwt`) is planned (M2.2b) and
+  will be the only mode safe without isolation.
+- Until `cf-access-jwt` lands, run the dashboard on your LAN or isolate it so
+  only your reverse proxy (Authelia, Authentik, Cloudflare Access, Caddy
+  `basic_auth`, Tailscale, …) can reach port 3001 directly.
 - See the **Security model** section of the [README](README.md#security-model)
-  for the same guidance with deployment examples.
+  for the preset table and deployment examples.
 
 ## How secrets are handled
 
