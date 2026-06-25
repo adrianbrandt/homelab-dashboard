@@ -10,24 +10,25 @@ coordinated disclosure.
 
 ## Security posture (read before exposing this)
 
-**homelab-dashboard ships pluggable app-level auth (M2.2).** Forward-header
-auth is opt-in (`auth.provider: forward-header` in `config.yaml`); by default
-the dashboard is open (`provider: none`) — do **not** expose the default config
-directly to the internet.
+**homelab-dashboard ships pluggable app-level auth (M2.2 + M2.2b).** Auth is
+opt-in; by default the dashboard is open (`provider: none`) — do **not** expose
+the default config directly to the internet.
 
-- **Forward-header trust is not a cryptographic boundary.** The identity header
-  is unsigned, so it is only an access boundary when your proxy is the *only*
-  thing that can reach the app. On a shared Docker network, any sibling
-  container can forge the header — **network isolation is required**, not just
-  localhost-publishing.
-- For a cryptographic boundary that is safe without network isolation,
-  Cloudflare Access JWT verification (`cf-access-jwt`) is planned (M2.2b) and
-  will be the only mode safe without isolation.
-- Until `cf-access-jwt` lands, run the dashboard on your LAN or isolate it so
-  only your reverse proxy (Authelia, Authentik, Cloudflare Access, Caddy
-  `basic_auth`, Tailscale, …) can reach port 3001 directly.
+- **`cf-access-jwt` is the recommended Cloudflare option — a cryptographic
+  boundary.** It verifies the signed `Cf-Access-Jwt-Assertion` token against
+  Cloudflare's published JWKS (signature + issuer + audience + expiry). Because
+  the token is signed, it is a real access boundary **even on a shared network**
+  — no network isolation required.
+- **Forward-header trust is not a cryptographic boundary.** With
+  `provider: forward-header` the identity header is unsigned, so it is only an
+  access boundary when your proxy is the *only* thing that can reach the app. On
+  a shared Docker network, any sibling container can forge the header —
+  **network isolation is required**, not just localhost-publishing.
+- With `forward-header`, run the dashboard on your LAN or isolate it so only your
+  reverse proxy (Authelia, Authentik, Cloudflare Access, Caddy `basic_auth`,
+  Tailscale, …) can reach port 3001 directly.
 - See the **Security model** section of the [README](README.md#security-model)
-  for the preset table and deployment examples.
+  for the preset table, the `cf-access-jwt` block, and deployment examples.
 
 ## How secrets are handled
 
