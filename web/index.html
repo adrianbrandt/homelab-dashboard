@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A single pane of glass for your homelab — service widgets and system monitoring in one self-hosted dashboard." />
     <title>homelab-dashboard</title>
+    <script>
+      (function () {
+        try {
+          var ls = window.localStorage;
+          var mode = ls.getItem('hld:theme') || ls.getItem('hld:cfg-theme') || 'dark';
+          var density = ls.getItem('hld:density') || ls.getItem('hld:cfg-density') || 'comfortable';
+          var theme = mode === 'auto'
+            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : mode;
+          var r = document.documentElement;
+          r.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+          r.setAttribute('data-density', density === 'compact' ? 'compact' : 'comfortable');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
