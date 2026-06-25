@@ -250,6 +250,12 @@ export interface AdguardData {
   blocked: number;
   blockedPct: number;
 }
+export interface ProwlarrData {
+  indexers: number;
+  enabled: number;
+  grabs: number;
+  queries: number;
+}
 
 export interface Identity {
   user: string;

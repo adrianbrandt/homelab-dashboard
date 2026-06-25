@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { Sonarr } from './Sonarr.tsx';
 import { Radarr } from './Radarr.tsx';
 import { Adguard } from './Adguard.tsx';
+import { Prowlarr } from './Prowlarr.tsx';
 
 describe('service tiles', () => {
   it('Sonarr shows queue/series/upcoming', () => {
@@ -19,5 +20,10 @@ describe('service tiles', () => {
     render(<Adguard data={{ queries: 48200, blocked: 8600, blockedPct: 18 }} />);
     expect(screen.getByText('AdGuard')).toBeInTheDocument();
     expect(screen.getByText('18%')).toBeInTheDocument();
+  });
+  it('Prowlarr shows indexers/enabled/grabs/queries', () => {
+    render(<Prowlarr data={{ indexers: 8, enabled: 6, grabs: 142, queries: 3300 }} />);
+    expect(screen.getByText('Prowlarr')).toBeInTheDocument();
+    expect(screen.getByText('142')).toBeInTheDocument();
   });
 });
