@@ -29,3 +29,48 @@ describe('auth config schema', () => {
     ).toThrow(/cannot be true when provider is none/);
   });
 });
+
+describe('cf-access-jwt auth schema', () => {
+  const parseAuth = (auth: unknown) => appConfigSchema.parse({ auth });
+
+  it('accepts cf-access-jwt with teamDomain + aud (string)', () => {
+    const cfg = parseAuth({
+      provider: 'cf-access-jwt',
+      teamDomain: 'team.cloudflareaccess.com',
+      aud: 'aud-tag',
+      required: true,
+    });
+    expect(cfg.auth.provider).toBe('cf-access-jwt');
+    expect(cfg.auth.teamDomain).toBe('team.cloudflareaccess.com');
+    expect(cfg.auth.aud).toBe('aud-tag');
+  });
+
+  it('accepts aud as a list', () => {
+    const cfg = parseAuth({
+      provider: 'cf-access-jwt',
+      teamDomain: 'team.cloudflareaccess.com',
+      aud: ['a', 'b'],
+    });
+    expect(cfg.auth.aud).toEqual(['a', 'b']);
+  });
+
+  it('rejects cf-access-jwt without teamDomain', () => {
+    expect(() => parseAuth({ provider: 'cf-access-jwt', aud: 'aud-tag' })).toThrow(/teamDomain/);
+  });
+
+  it('rejects cf-access-jwt without aud', () => {
+    expect(() =>
+      parseAuth({ provider: 'cf-access-jwt', teamDomain: 'team.cloudflareaccess.com' }),
+    ).toThrow(/aud/);
+  });
+
+  it('rejects cf-access-jwt with an empty aud list', () => {
+    expect(() =>
+      parseAuth({ provider: 'cf-access-jwt', teamDomain: 'team.cloudflareaccess.com', aud: [] }),
+    ).toThrow(/aud/);
+  });
+
+  it('still parses the default (provider none) clean', () => {
+    expect(appConfigSchema.parse({}).auth.provider).toBe('none');
+  });
+});
