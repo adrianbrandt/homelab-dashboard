@@ -5,6 +5,7 @@ import { Radarr } from './Radarr.tsx';
 import { Adguard } from './Adguard.tsx';
 import { Prowlarr } from './Prowlarr.tsx';
 import { Overseerr } from './Overseerr.tsx';
+import { Plex } from './Plex.tsx';
 
 describe('service tiles', () => {
   it('Sonarr shows queue/series/upcoming', () => {
@@ -31,5 +32,10 @@ describe('service tiles', () => {
     render(<Overseerr data={{ pending: 4, processing: 1, available: 200 }} />);
     expect(screen.getByText('Overseerr')).toBeInTheDocument();
     expect(screen.getByText('200')).toBeInTheDocument();
+  });
+  it('Plex shows streams/libraries', () => {
+    render(<Plex data={{ streams: 2, libraries: 5 }} />);
+    expect(screen.getByText('Plex')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
   });
 });

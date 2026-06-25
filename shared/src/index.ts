@@ -263,6 +263,11 @@ export interface OverseerrData {
   available: number;
 }
 
+export interface PlexData {
+  streams: number;
+  libraries: number;
+}
+
 export interface Identity {
   user: string;
 }
