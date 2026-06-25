@@ -22,7 +22,7 @@ function resolveTheme(mode: ThemeMode): 'dark' | 'light' {
 
 export function useTheme() {
   const { data: layout } = useLayout();
-  const cfg = layout?.settings.theme;
+  const cfg = layout?.settings?.theme;
 
   // Viewer choice (localStorage) wins; else config; else default.
   const [viewerMode, setViewerMode] = useState<ThemeMode | null>(() => {
