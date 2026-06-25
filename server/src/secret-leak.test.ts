@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { createApp } from './app.ts';
 import { loadConfig } from './config/load.ts';
+import { CfAccessJwtProvider } from './auth/cf-access-jwt.ts';
+import type { JWTVerifyGetKey } from 'jose';
 import type { DataSource } from '@dashboard/shared';
 
 function stubDataSource(): DataSource {
@@ -68,5 +70,37 @@ groups:
     const layout = await request(app).get('/api/layout').set('X-Test-User', email);
     expect(layout.status).toBe(200);
     expect(JSON.stringify(layout.body)).not.toContain(email); // never here
+  });
+
+  it('never echoes the raw Cf-Access-Jwt-Assertion header in /api/layout', async () => {
+    const appConfig = loadConfig({
+      text: `
+auth:
+  provider: cf-access-jwt
+  teamDomain: team.cloudflareaccess.com
+  aud: aud-tag
+groups:
+  - name: Media
+    widgets:
+      - type: bookmarks
+        items:
+          - { label: Sonarr, url: https://sonarr }
+`,
+    });
+    // Inject a JWKS getter that throws so verification fails offline (no network, no leak risk).
+    const throwing = (() => {
+      throw new Error('no network in test');
+    }) as unknown as JWTVerifyGetKey;
+    const authProvider = new CfAccessJwtProvider({
+      issuer: 'https://team.cloudflareaccess.com',
+      aud: ['aud-tag'],
+      jwks: throwing,
+    });
+    const app = createApp({ appConfig, dataSource: stubDataSource(), authProvider });
+    const jwtCanary = 'JWT-CANARY-token.value.signature';
+
+    const layout = await request(app).get('/api/layout').set('Cf-Access-Jwt-Assertion', jwtCanary);
+    expect(layout.status).toBe(200);
+    expect(JSON.stringify(layout.body)).not.toContain(jwtCanary);
   });
 });
