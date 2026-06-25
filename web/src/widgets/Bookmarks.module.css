@@ -7,7 +7,7 @@
   gap: 0.5rem;
 }
 .list a {
-  color: var(--accent, #7aa2f7);
+  color: var(--accent);
   text-decoration: none;
 }
 .list a:hover {

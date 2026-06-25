@@ -10,7 +10,7 @@
 }
 .line {
   fill: none;
-  stroke: var(--accent, #3aa88a);
+  stroke: var(--accent);
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
@@ -20,7 +20,7 @@
   white-space: nowrap;
 }
 .empty {
-  color: var(--muted, #888);
+  color: var(--text-dim);
   font-size: 0.8rem;
   height: 40px;
   display: flex;

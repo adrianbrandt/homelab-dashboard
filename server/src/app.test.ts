@@ -260,6 +260,7 @@ groups:
     const res = await request(createApp({ appConfig, dataSource: stubDataSource() })).get('/api/layout');
     expect(res.status).toBe(200);
     expect(res.body.data.settings.title).toBe('Test Lab');
+    expect(res.body.data.settings.theme).toEqual({ mode: 'dark', density: 'comfortable' });
     expect(res.body.data.groups).toEqual([
       { name: 'Media', widgets: [{ id: '0-0', type: 'bookmarks' }] },
     ]);

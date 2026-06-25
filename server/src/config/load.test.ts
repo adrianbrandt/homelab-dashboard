@@ -11,6 +11,27 @@ describe('config loader', () => {
     delete process.env.ADGUARD_PASS;
   });
 
+  it('defaults the theme block when omitted', () => {
+    const cfg = parseConfig('settings:\n  title: Lab\n');
+    expect(cfg.settings.theme).toEqual({ mode: 'dark', density: 'comfortable' });
+  });
+
+  it('parses an explicit theme block', () => {
+    const cfg = parseConfig(`
+settings:
+  title: Lab
+  theme:
+    mode: light
+    density: compact
+    accent: "#e0a575"
+`);
+    expect(cfg.settings.theme).toEqual({ mode: 'light', density: 'compact', accent: '#e0a575' });
+  });
+
+  it('rejects an invalid theme mode', () => {
+    expect(() => parseConfig('settings:\n  theme:\n    mode: neon\n')).toThrow(ConfigError);
+  });
+
   it('parses a valid config with defaults', () => {
     const cfg = parseConfig(`
 hosts:

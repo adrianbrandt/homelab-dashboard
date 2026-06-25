@@ -2,6 +2,11 @@
 # Secrets: never inline — use double-brace env refs e.g. MYKEY (resolved at startup).
 settings:
   title: Homelab
+  # Theming (all optional; these are the defaults)
+  # theme:
+  #   mode: dark            # dark | light | auto (follows the OS)
+  #   density: comfortable  # comfortable | compact
+  #   accent: "#e0a575"     # optional brand accent (links, active nav, focus ring)
 
 # --- Authentication (optional) ---------------------------------------------
 # By default the dashboard is OPEN (provider: none). app-level auth trusts an

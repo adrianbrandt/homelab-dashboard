@@ -8,7 +8,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: var(--text-muted, #b9b3a8);
+  color: var(--text-dim);
 }
 
 .avatar {
@@ -18,8 +18,8 @@
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 50%;
-  background: var(--accent, #c98a5e);
-  color: #1b1813;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 600;
   font-size: 0.8rem;
 }

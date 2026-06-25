@@ -1,4 +1,7 @@
-.page { max-width: 1100px; margin: 0 auto; padding: 24px 20px 48px; }
+.page { max-width: 1100px; margin: 0 auto; padding: var(--space-5) var(--space-4) var(--space-6); }
+@media (max-width: 480px) {
+  .page { padding-left: var(--space-3); padding-right: var(--space-3); }
+}
 .header {
   display: flex;
   align-items: baseline;
@@ -12,7 +15,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: var(--space-3);
 }
 @media (min-width: 640px) {
   .grid { grid-template-columns: 1fr 1fr; }
@@ -26,7 +29,7 @@
   display: block;
 }
 .cardLink:hover {
-  outline: 1px solid var(--border, #444);
+  outline: 1px solid var(--border);
   border-radius: 10px;
 }
 .group {
@@ -35,7 +38,7 @@
 .groupTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--muted, #7f849c);
+  color: var(--text-dim);
   margin: 0 0 0.75rem;
 }
 .widgetGrid {

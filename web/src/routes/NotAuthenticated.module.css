@@ -11,8 +11,8 @@
   text-align: center;
   padding: 2rem;
   border-radius: 0.75rem;
-  background: var(--surface, #221f1a);
-  border: 1px solid var(--border, #3a352c);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .title {
@@ -22,15 +22,15 @@
 
 .body {
   margin: 0 0 1.25rem;
-  color: var(--text-muted, #b9b3a8);
+  color: var(--text-dim);
 }
 
 .link {
   display: inline-block;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  background: var(--accent, #c98a5e);
-  color: #1b1813;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 600;
   text-decoration: none;
 }

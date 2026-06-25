@@ -215,8 +215,16 @@ export interface WidgetGroup {
   name: string;
   widgets: WidgetMeta[];
 }
+export type ThemeMode = 'dark' | 'light' | 'auto';
+export type ThemeDensity = 'comfortable' | 'compact';
+export interface ThemeConfig {
+  mode: ThemeMode;
+  density: ThemeDensity;
+  accent?: string;
+}
 export interface LayoutSettings {
   title: string;
+  theme: ThemeConfig;
 }
 export interface LayoutResponse {
   settings: LayoutSettings;

@@ -127,6 +127,26 @@ groups:
 
 ---
 
+## Theming
+
+The dashboard ships a warm **dark** theme and a **light** theme, plus
+**comfortable**/**compact** density. Set the defaults in `config.yaml`:
+
+```yaml
+settings:
+  theme:
+    mode: dark            # dark | light | auto (follows the OS)
+    density: comfortable  # comfortable | compact
+    accent: "#e0a575"     # optional brand accent (links, active nav, focus ring)
+```
+
+Viewers can override mode and density at runtime with the toggles in the header
+(stored per-browser in `localStorage`); their choice takes precedence over the
+config default. All colors and spacing are CSS custom properties in
+`web/src/index.css`, so re-theming is a token edit.
+
+---
+
 ## Available widgets
 
 | Widget | Config fields | What it shows |

@@ -1,14 +1,14 @@
 .widget {
-  background: var(--card, #1a1b26);
-  border: 1px solid var(--border, #2a2b3c);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1rem;
 }
 .muted {
-  color: var(--muted, #7f849c);
+  color: var(--text-dim);
   font-size: 0.875rem;
 }
 .error {
-  color: #e6a17a;
+  color: var(--warn-1);
   font-size: 0.85rem;
 }
