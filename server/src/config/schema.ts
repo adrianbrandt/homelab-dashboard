@@ -8,6 +8,14 @@ export const sourceSchema = z.object({
 
 export const linkSchema = z.object({ label: z.string(), url: z.string() });
 
+export const themeSchema = z
+  .object({
+    mode: z.enum(['dark', 'light', 'auto']).default('dark'),
+    density: z.enum(['comfortable', 'compact']).default('comfortable'),
+    accent: z.string().optional(),
+  })
+  .default({ mode: 'dark', density: 'comfortable' });
+
 export const hostSchema = z
   .object({
     id: z.string(),
@@ -55,7 +63,9 @@ export const authSchema = z
 
 export const appConfigSchema = z
   .object({
-    settings: z.object({ title: z.string().default('Homelab') }).default({ title: 'Homelab' }),
+    settings: z
+      .object({ title: z.string().default('Homelab'), theme: themeSchema })
+      .default({ title: 'Homelab', theme: { mode: 'dark', density: 'comfortable' } }),
     auth: authSchema,
     hosts: z.array(hostSchema).default([]),
     groups: z.array(groupSchema).default([]),
