@@ -38,8 +38,12 @@ export function createApp(
   const authProvider = getAuthProvider(auth);
 
   // Resolve identity for every /api request; never throws.
-  app.use(API_BASE, (req, _res, next) => {
-    (req as AuthedRequest).identity = authProvider.resolve(req);
+  app.use(API_BASE, async (req, _res, next) => {
+    try {
+      (req as AuthedRequest).identity = await authProvider.resolve(req);
+    } catch {
+      (req as AuthedRequest).identity = null;
+    }
     next();
   });
 

@@ -13,7 +13,7 @@ export class ForwardHeaderProvider implements AuthProvider {
     this.trustedProxies = trustedProxies;
   }
 
-  resolve(req: express.Request): Identity | null {
+  async resolve(req: express.Request): Promise<Identity | null> {
     if (this.trustedProxies.length > 0) {
       if (!ipMatchesAny(req.socket.remoteAddress, this.trustedProxies)) return null;
     }

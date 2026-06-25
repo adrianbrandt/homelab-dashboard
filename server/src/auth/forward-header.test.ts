@@ -7,39 +7,39 @@ function fakeReq(headers: Record<string, string | string[]>, remoteAddress = '10
 }
 
 describe('ForwardHeaderProvider', () => {
-  it('reads the configured header (case-insensitive) and trims', () => {
+  it('reads the configured header (case-insensitive) and trims', async () => {
     const p = new ForwardHeaderProvider('Cf-Access-Authenticated-User-Email', []);
-    const id = p.resolve(fakeReq({ 'cf-access-authenticated-user-email': '  a@b.com  ' }));
+    const id = await p.resolve(fakeReq({ 'cf-access-authenticated-user-email': '  a@b.com  ' }));
     expect(id).toEqual({ user: 'a@b.com' });
   });
 
-  it('returns null when the header is missing', () => {
+  it('returns null when the header is missing', async () => {
     const p = new ForwardHeaderProvider('X-User', []);
-    expect(p.resolve(fakeReq({}))).toBeNull();
+    expect(await p.resolve(fakeReq({}))).toBeNull();
   });
 
-  it('returns null when the header is empty after trim', () => {
+  it('returns null when the header is empty after trim', async () => {
     const p = new ForwardHeaderProvider('X-User', []);
-    expect(p.resolve(fakeReq({ 'x-user': '   ' }))).toBeNull();
+    expect(await p.resolve(fakeReq({ 'x-user': '   ' }))).toBeNull();
   });
 
-  it('rejects a multi-valued (comma) header as forged', () => {
+  it('rejects a multi-valued (comma) header as forged', async () => {
     const p = new ForwardHeaderProvider('X-User', []);
-    expect(p.resolve(fakeReq({ 'x-user': 'real@b.com, evil@x.com' }))).toBeNull();
+    expect(await p.resolve(fakeReq({ 'x-user': 'real@b.com, evil@x.com' }))).toBeNull();
   });
 
-  it('rejects a duplicate header delivered as an array', () => {
+  it('rejects a duplicate header delivered as an array', async () => {
     const p = new ForwardHeaderProvider('X-User', []);
-    expect(p.resolve(fakeReq({ 'x-user': ['real@b.com', 'evil@x.com'] }))).toBeNull();
+    expect(await p.resolve(fakeReq({ 'x-user': ['real@b.com', 'evil@x.com'] }))).toBeNull();
   });
 
-  it('ignores the header when the peer is not a trusted proxy', () => {
+  it('ignores the header when the peer is not a trusted proxy', async () => {
     const p = new ForwardHeaderProvider('X-User', ['10.20.0.2/32']);
-    expect(p.resolve(fakeReq({ 'x-user': 'a@b.com' }, '10.99.0.1'))).toBeNull();
+    expect(await p.resolve(fakeReq({ 'x-user': 'a@b.com' }, '10.99.0.1'))).toBeNull();
   });
 
-  it('accepts the header when the peer is a trusted proxy', () => {
+  it('accepts the header when the peer is a trusted proxy', async () => {
     const p = new ForwardHeaderProvider('X-User', ['10.20.0.2/32']);
-    expect(p.resolve(fakeReq({ 'x-user': 'a@b.com' }, '10.20.0.2'))).toEqual({ user: 'a@b.com' });
+    expect(await p.resolve(fakeReq({ 'x-user': 'a@b.com' }, '10.20.0.2'))).toEqual({ user: 'a@b.com' });
   });
 });
