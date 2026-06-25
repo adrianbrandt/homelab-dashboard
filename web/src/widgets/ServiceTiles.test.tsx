@@ -4,6 +4,7 @@ import { Sonarr } from './Sonarr.tsx';
 import { Radarr } from './Radarr.tsx';
 import { Adguard } from './Adguard.tsx';
 import { Prowlarr } from './Prowlarr.tsx';
+import { Overseerr } from './Overseerr.tsx';
 
 describe('service tiles', () => {
   it('Sonarr shows queue/series/upcoming', () => {
@@ -25,5 +26,10 @@ describe('service tiles', () => {
     render(<Prowlarr data={{ indexers: 8, enabled: 6, grabs: 142, queries: 3300 }} />);
     expect(screen.getByText('Prowlarr')).toBeInTheDocument();
     expect(screen.getByText('142')).toBeInTheDocument();
+  });
+  it('Overseerr shows pending/processing/available', () => {
+    render(<Overseerr data={{ pending: 4, processing: 1, available: 200 }} />);
+    expect(screen.getByText('Overseerr')).toBeInTheDocument();
+    expect(screen.getByText('200')).toBeInTheDocument();
   });
 });

@@ -257,6 +257,12 @@ export interface ProwlarrData {
   queries: number;
 }
 
+export interface OverseerrData {
+  pending: number;
+  processing: number;
+  available: number;
+}
+
 export interface Identity {
   user: string;
 }
