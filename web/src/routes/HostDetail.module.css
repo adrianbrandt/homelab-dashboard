@@ -18,27 +18,27 @@
   font-weight: 600;
 }
 .back {
-  color: var(--muted, #aaa);
+  color: var(--text-dim);
   text-decoration: none;
   font-size: 0.85rem;
 }
 .toggle {
   display: inline-flex;
-  border: 1px solid var(--border, #444);
+  border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
 }
 .toggle button {
   background: transparent;
-  color: var(--muted, #aaa);
+  color: var(--text-dim);
   border: 0;
   padding: 0.25rem 0.6rem;
   cursor: pointer;
   font: inherit;
 }
 .toggle button.on {
-  background: var(--accent, #3aa88a);
-  color: #04231c;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 600;
 }
 .body {
@@ -52,8 +52,8 @@
   }
 }
 .panel {
-  background: var(--panel, #1a1a1a);
-  border: 1px solid var(--border, #333);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.8rem;
   margin-bottom: 0.8rem;
@@ -62,18 +62,18 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--muted, #888);
+  color: var(--text-dim);
   margin-bottom: 0.4rem;
 }
 .kv {
   display: flex;
   justify-content: space-between;
   padding: 0.2rem 0;
-  border-bottom: 1px solid var(--border, #2a2a2a);
+  border-bottom: 1px solid var(--border);
   font-size: 0.85rem;
 }
 .kv span:first-child {
-  color: var(--muted, #888);
+  color: var(--text-dim);
 }
 .links {
   display: flex;
@@ -81,14 +81,14 @@
   gap: 0.4rem;
 }
 .links a {
-  color: var(--accent, #7ddcc4);
+  color: var(--accent);
   text-decoration: none;
-  border: 1px solid var(--border, #3a8);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 0.25rem 0.6rem;
   font-size: 0.8rem;
   text-align: center;
 }
 .muted {
-  color: var(--muted, #888);
+  color: var(--text-dim);
 }

@@ -26,7 +26,7 @@
   display: block;
 }
 .cardLink:hover {
-  outline: 1px solid var(--border, #444);
+  outline: 1px solid var(--border);
   border-radius: 10px;
 }
 .group {
@@ -35,7 +35,7 @@
 .groupTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--muted, #7f849c);
+  color: var(--text-dim);
   margin: 0 0 0.75rem;
 }
 .widgetGrid {
