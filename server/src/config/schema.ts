@@ -42,12 +42,14 @@ export const AUTH_PRESETS = [
 
 export const authSchema = z
   .object({
-    provider: z.enum(['none', 'forward-header']).default('none'),
+    provider: z.enum(['none', 'forward-header', 'cf-access-jwt']).default('none'),
     preset: z.enum(AUTH_PRESETS).optional(),
     required: z.boolean().default(false),
     header: z.string().optional(),
     trustedProxies: z.array(z.string()).optional(),
     logoutUrl: z.string().optional(),
+    teamDomain: z.string().optional(),
+    aud: z.union([z.string(), z.array(z.string())]).optional(),
   })
   .default({ provider: 'none', required: false });
 
@@ -73,6 +75,26 @@ export const appConfigSchema = z
         path: ['auth', 'required'],
         message: 'auth.required cannot be true when provider is none',
       });
+    }
+    if (a.provider === 'cf-access-jwt') {
+      if (!a.teamDomain) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['auth', 'teamDomain'],
+          message: 'teamDomain is required when provider is cf-access-jwt',
+        });
+      }
+      const audEmpty =
+        a.aud === undefined ||
+        (typeof a.aud === 'string' && a.aud.trim() === '') ||
+        (Array.isArray(a.aud) && a.aud.length === 0);
+      if (audEmpty) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['auth', 'aud'],
+          message: 'aud is required (non-empty) when provider is cf-access-jwt',
+        });
+      }
     }
   });
 

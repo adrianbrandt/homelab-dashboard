@@ -22,8 +22,8 @@ Host-owned failure handling: `runWidget` wraps every widget fetch with an 8-seco
 
 1. ✅ **OSS release bundle** — public README, CONTRIBUTING guide, config reference, example config, published Docker image.
 2. ✅ **Pluggable forward-auth (M2.2)** — `auth:` config block with `provider: forward-header`; presets for Cloudflare Access, Authelia, Authentik, oauth2-proxy, Tailscale, and custom; `required` enforcement gate; `/api/me`; user chip + logout; blocked page. ⚠️ The identity header is unsigned — forward-header trust requires network isolation (only your proxy can reach the app).
-   - 🔨 **cf-access-jwt (M2.2b)** — cryptographic Cloudflare Access JWT verification. The only forward-auth mode that is safe without network isolation. *(next)*
-3. **Theming + layout polish (M2.3)** — CSS custom-property theme tokens, layout density options, mobile-friendly grid.
+   - ✅ **cf-access-jwt (M2.2b)** — cryptographic Cloudflare Access JWT verification (`provider: cf-access-jwt`; verifies the signed `Cf-Access-Jwt-Assertion` against Cloudflare's JWKS — signature + issuer + audience + expiry). The only auth mode safe without network isolation.
+3. 🔨 **Theming + layout polish (M2.3)** — CSS custom-property theme tokens, layout density options, mobile-friendly grid. *(next)*
 
 ## Ongoing
 

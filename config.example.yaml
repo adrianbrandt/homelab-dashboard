@@ -7,12 +7,13 @@ settings:
 # By default the dashboard is OPEN (provider: none). app-level auth trusts an
 # identity header set by your reverse proxy / identity-aware proxy.
 #
-# The header is UNSIGNED. It is only an access boundary if your proxy is the
-# ONLY thing that can reach this app (isolate the network / bind to the proxy).
-# On a shared Docker network, sibling containers can forge it.
+# With provider: forward-header the header is UNSIGNED. It is only an access
+# boundary if your proxy is the ONLY thing that can reach this app (isolate the
+# network / bind to the proxy). On a shared Docker network, sibling containers
+# can forge it.
 #
 # auth:
-#   provider: forward-header        # none (default) | forward-header
+#   provider: forward-header        # none (default) | forward-header | cf-access-jwt
 #   preset: cloudflare              # cloudflare | authelia | authentik | oauth2-proxy | tailscale | custom
 #   required: true                  # 401 the API when no identity is present
 #   # header: X-Forwarded-Email     # overrides the preset; REQUIRED when preset: custom.
@@ -20,6 +21,14 @@ settings:
 #   #                               # not a comma-joined one like Remote-Groups.
 #   # trustedProxies: ["10.20.0.2/32"]  # optional: the LAST-HOP proxy's address (a /32, not a subnet)
 #   # logoutUrl: /cdn-cgi/access/logout # optional; preset fills a sensible default
+#
+# Cloudflare Access (SIGNED — safe even on a shared network, no isolation needed):
+# cryptographically verifies the Cf-Access-Jwt-Assertion token against Cloudflare's JWKS.
+# auth:
+#   provider: cf-access-jwt
+#   teamDomain: your-team.cloudflareaccess.com  # your Access team domain
+#   aud: your-access-app-aud-tag                # string or list; scopes the token to one Access app
+#   required: true
 auth:
   provider: none
 

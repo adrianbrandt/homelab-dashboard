@@ -146,12 +146,12 @@ homelab-dashboard supports **pluggable app-level auth** by trusting an identity
 header set by your reverse proxy. By default it is **open** (`auth.provider: none`)
 — do not expose the default config directly to the internet.
 
-> ⚠️ **The identity header is unsigned.** Forward-header trust is an access
-> boundary **only when your proxy is the only thing that can reach the app** —
-> isolate the network or bind the app to the proxy. On a shared Docker network,
-> any sibling container can forge the header. For a cryptographic boundary that
-> is safe without isolation, Cloudflare Access JWT verification is planned
-> (`cf-access-jwt`, see [ROADMAP](ROADMAP.md)).
+> ⚠️ **The `forward-header` identity header is unsigned.** Forward-header trust
+> is an access boundary **only when your proxy is the only thing that can reach
+> the app** — isolate the network or bind the app to the proxy. On a shared
+> Docker network, any sibling container can forge the header. For a cryptographic
+> boundary that is **safe even on a shared network**, use the `cf-access-jwt`
+> provider (below), which verifies a signed token instead of trusting a header.
 
 Enable it in `config.yaml`:
 
@@ -168,6 +168,28 @@ Set `required: true` to make the app 401 unauthenticated API requests. The
 optional `trustedProxies` list restricts which TCP peer (your last-hop proxy,
 as a `/32` — not a whole subnet) may set the header. Secrets in `config.yaml`
 are resolved server-side via `{{ENV}}` and never reach the browser.
+
+### Cloudflare Access (signed — `cf-access-jwt`)
+
+If you sit behind **Cloudflare Access**, prefer `provider: cf-access-jwt`. It
+**cryptographically verifies** the `Cf-Access-Jwt-Assertion` token against
+Cloudflare's published signing keys (JWKS), checking the signature, issuer,
+audience, and expiry. Because the token is signed, this is a **real access
+boundary even on a shared network** — unlike `forward-header`, it does not
+require network isolation.
+
+```yaml
+auth:
+  provider: cf-access-jwt
+  teamDomain: your-team.cloudflareaccess.com   # your Access team domain
+  aud: <access-application-aud-tag>            # string or list; scopes the token to one Access app
+  required: true
+```
+
+`teamDomain` and `aud` are both required. `aud` (the Access **application
+audience tag**) scopes the token to one Access app, so a valid token issued for
+a *different* app on your team is rejected. Logout defaults to
+`/cdn-cgi/access/logout`.
 
 See [SECURITY.md](SECURITY.md) for the full security posture and how to report vulnerabilities.
 

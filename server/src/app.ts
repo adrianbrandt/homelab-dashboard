@@ -20,13 +20,19 @@ import type { AppConfig } from './config/schema.ts';
 import { getWidget, widgetInstances, runWidget } from './widgets/index.ts';
 import { resolveAuth } from './auth/presets.ts';
 import { getAuthProvider } from './auth/index.ts';
+import type { AuthProvider } from './auth/types.ts';
 
 type AuthedRequest = express.Request & { identity?: Identity | null };
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 export function createApp(
-  opts: { webDist?: string; dataSource?: DataSource; appConfig?: AppConfig } = {},
+  opts: {
+    webDist?: string;
+    dataSource?: DataSource;
+    appConfig?: AppConfig;
+    authProvider?: AuthProvider;
+  } = {},
 ) {
   const app = express();
   app.use(express.json());
@@ -35,11 +41,15 @@ export function createApp(
   const dataSource = opts.dataSource ?? getDataSource(appConfig.hosts);
 
   const auth = resolveAuth(appConfig.auth);
-  const authProvider = getAuthProvider(auth);
+  const authProvider = opts.authProvider ?? getAuthProvider(auth);
 
   // Resolve identity for every /api request; never throws.
-  app.use(API_BASE, (req, _res, next) => {
-    (req as AuthedRequest).identity = authProvider.resolve(req);
+  app.use(API_BASE, async (req, _res, next) => {
+    try {
+      (req as AuthedRequest).identity = await authProvider.resolve(req);
+    } catch {
+      (req as AuthedRequest).identity = null;
+    }
     next();
   });
 

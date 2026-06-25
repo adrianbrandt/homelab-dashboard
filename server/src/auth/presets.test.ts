@@ -13,6 +13,8 @@ describe('resolveAuth', () => {
       header: '',
       logoutUrl: null,
       trustedProxies: [],
+      issuer: '',
+      aud: [],
     });
   });
 
@@ -47,5 +49,40 @@ describe('resolveAuth', () => {
     );
     expect(r.required).toBe(true);
     expect(r.trustedProxies).toEqual(['10.20.0.2/32']);
+  });
+});
+
+describe('resolveAuth cf-access-jwt', () => {
+  const parse = (auth: unknown) => appConfigSchema.parse({ auth }).auth;
+
+  it('derives issuer from teamDomain and normalizes a string aud', () => {
+    const r = resolveAuth(
+      parse({ provider: 'cf-access-jwt', teamDomain: 'team.cloudflareaccess.com', aud: 'aud-tag' }),
+    );
+    expect(r.provider).toBe('cf-access-jwt');
+    expect(r.issuer).toBe('https://team.cloudflareaccess.com');
+    expect(r.aud).toEqual(['aud-tag']);
+    expect(r.header).toBe('Cf-Access-Jwt-Assertion');
+    expect(r.logoutUrl).toBe('/cdn-cgi/access/logout');
+  });
+
+  it('keeps a list aud as-is and carries required through', () => {
+    const r = resolveAuth(
+      parse({
+        provider: 'cf-access-jwt',
+        teamDomain: 'team.cloudflareaccess.com',
+        aud: ['a', 'b'],
+        required: true,
+      }),
+    );
+    expect(r.aud).toEqual(['a', 'b']);
+    expect(r.required).toBe(true);
+  });
+
+  it('tolerates a teamDomain that already includes https://', () => {
+    const r = resolveAuth(
+      parse({ provider: 'cf-access-jwt', teamDomain: 'https://team.cloudflareaccess.com/', aud: 'x' }),
+    );
+    expect(r.issuer).toBe('https://team.cloudflareaccess.com');
   });
 });
