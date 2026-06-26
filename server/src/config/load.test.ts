@@ -9,6 +9,10 @@ describe('config loader', () => {
     delete process.env.SONARR_KEY;
     delete process.env.RADARR_KEY;
     delete process.env.ADGUARD_PASS;
+    delete process.env.PROWLARR_KEY;
+    delete process.env.OVERSEERR_KEY;
+    delete process.env.PLEX_TOKEN;
+    delete process.env.QBIT_PASS;
   });
 
   it('defaults the theme block when omitted', () => {
@@ -110,6 +114,10 @@ hosts:
     process.env.SONARR_KEY = 'x';
     process.env.RADARR_KEY = 'y';
     process.env.ADGUARD_PASS = 'z';
+    process.env.PROWLARR_KEY = 'p';
+    process.env.OVERSEERR_KEY = 'o';
+    process.env.PLEX_TOKEN = 't';
+    process.env.QBIT_PASS = 'q';
     const examplePath = path.join(import.meta.dirname, '../../../config.example.yaml');
     const cfg = loadConfig({ path: examplePath });
     expect(() => validateLayout(cfg)).not.toThrow();

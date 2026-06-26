@@ -24,6 +24,12 @@ describe('widget registry', () => {
     expect(() => validateLayout(cfg)).toThrow(/ghost/);
   });
 
+  it('resolves the M2.4 service widgets', () => {
+    for (const t of ['prowlarr', 'overseerr', 'plex', 'qbittorrent']) {
+      expect(getWidget(t)?.type).toBe(t);
+    }
+  });
+
   it('widgetInstances derives ids from position when none given', () => {
     const cfg = loadConfig({
       text: `
