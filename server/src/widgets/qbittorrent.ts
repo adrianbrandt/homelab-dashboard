@@ -47,10 +47,10 @@ export function makeQbittorrent(fetchFn: FetchLike = fetch): WidgetModule<Config
     type: 'qbittorrent',
     configSchema: schema,
     async fetch(config) {
-      const sid = await client.login(config.url, config.username, config.password);
+      const cookie = await client.login(config.url, config.username, config.password);
       const [transfer, torrents] = await Promise.all([
-        client.get<Transfer>(config.url, '/api/v2/transfer/info', sid),
-        client.get<Torrent[]>(config.url, '/api/v2/torrents/info', sid),
+        client.get<Transfer>(config.url, '/api/v2/transfer/info', cookie),
+        client.get<Torrent[]>(config.url, '/api/v2/torrents/info', cookie),
       ]);
       return {
         active: torrents.filter((t) => !INACTIVE.has(t.state)).length,
