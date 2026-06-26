@@ -62,6 +62,19 @@ groups:
       - type: radarr
         url: http://192.168.1.10:7878
         key: "{{RADARR_KEY}}"
+      - type: prowlarr
+        url: http://192.168.1.10:9696
+        key: "{{PROWLARR_KEY}}"
+      - type: overseerr
+        url: http://192.168.1.10:5055
+        key: "{{OVERSEERR_KEY}}"
+      - type: plex
+        url: http://192.168.1.10:32400
+        token: "{{PLEX_TOKEN}}"
+      - type: qbittorrent
+        url: http://192.168.1.10:8080
+        username: admin
+        password: "{{QBIT_PASS}}"
   - name: Infra
     widgets:
       - type: adguard

@@ -29,6 +29,19 @@ groups:
       - type: sonarr
         url: http://127.0.0.1:1
         key: {{SECRET_CANARY}}
+      - type: prowlarr
+        url: http://127.0.0.1:1
+        key: {{SECRET_CANARY}}
+      - type: overseerr
+        url: http://127.0.0.1:1
+        key: {{SECRET_CANARY}}
+      - type: plex
+        url: http://127.0.0.1:1
+        token: {{SECRET_CANARY}}
+      - type: qbittorrent
+        url: http://127.0.0.1:1
+        username: admin
+        password: {{SECRET_CANARY}}
 `,
       });
       const app = createApp({ appConfig, dataSource: stubDataSource() });
