@@ -6,6 +6,7 @@ import { Adguard } from './Adguard.tsx';
 import { Prowlarr } from './Prowlarr.tsx';
 import { Overseerr } from './Overseerr.tsx';
 import { Plex } from './Plex.tsx';
+import { Qbittorrent } from './Qbittorrent.tsx';
 
 describe('service tiles', () => {
   it('Sonarr shows queue/series/upcoming', () => {
@@ -37,5 +38,13 @@ describe('service tiles', () => {
     render(<Plex data={{ streams: 2, libraries: 5 }} />);
     expect(screen.getByText('Plex')).toBeInTheDocument();
     expect(screen.getByText('5')).toBeInTheDocument();
+  });
+  it('Qbittorrent shows counts and formatted speeds', () => {
+    render(
+      <Qbittorrent data={{ active: 3, downloading: 1, seeding: 2, downSpeed: 2 * 1024 * 1024, upSpeed: 50 * 1024 }} />,
+    );
+    expect(screen.getByText('qBittorrent')).toBeInTheDocument();
+    expect(screen.getByText('2.0 MB/s')).toBeInTheDocument();
+    expect(screen.getByText('50 KB/s')).toBeInTheDocument();
   });
 });

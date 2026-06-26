@@ -268,6 +268,14 @@ export interface PlexData {
   libraries: number;
 }
 
+export interface QbittorrentData {
+  active: number;
+  downloading: number;
+  seeding: number;
+  downSpeed: number;
+  upSpeed: number;
+}
+
 export interface Identity {
   user: string;
 }

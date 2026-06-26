@@ -6,6 +6,7 @@ import { adguard } from './adguard.ts';
 import { prowlarr } from './prowlarr.ts';
 import { overseerr } from './overseerr.ts';
 import { plex } from './plex.ts';
+import { qbittorrent } from './qbittorrent.ts';
 
 registerWidget(bookmarks);
 registerWidget(sonarr);
@@ -14,6 +15,7 @@ registerWidget(adguard);
 registerWidget(prowlarr);
 registerWidget(overseerr);
 registerWidget(plex);
+registerWidget(qbittorrent);
 
 export { getWidget, validateLayout } from './registry.ts';
 export { widgetInstances, type WidgetInstance } from './instances.ts';
