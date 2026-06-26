@@ -1,8 +1,10 @@
 import type { FetchLike } from './http.ts';
 
 export interface QbitClient {
+  /** Logs in and returns the session cookie as a verbatim `name=value` pair. */
   login(url: string, username: string, password: string): Promise<string>;
-  get<T>(url: string, path: string, sid: string): Promise<T>;
+  /** Issues a GET with the given cookie pair sent verbatim as the Cookie header. */
+  get<T>(url: string, path: string, cookie: string): Promise<T>;
 }
 
 export function makeQbitClient(fetchFn: FetchLike = fetch): QbitClient {
@@ -15,13 +17,16 @@ export function makeQbitClient(fetchFn: FetchLike = fetch): QbitClient {
         body,
       });
       if (!res.ok) throw new Error(`qbittorrent login failed: HTTP ${res.status}`);
-      const cookie = res.headers.get('set-cookie') ?? '';
-      const m = /SID=([^;]+)/.exec(cookie);
-      if (!m) throw new Error('qbittorrent login: no SID cookie returned');
+      const setCookie = res.headers.get('set-cookie') ?? '';
+      // qBittorrent's session cookie name varies by version (legacy `SID`,
+      // 5.x `QBT_SID_<port>`, …). Capture the first cookie's `name=value` pair
+      // and reuse it verbatim rather than assuming a fixed name.
+      const m = /^\s*([^=;,\s]+=[^;]+)/.exec(setCookie);
+      if (!m) throw new Error('qbittorrent login: no session cookie returned');
       return m[1];
     },
-    async get<T>(url: string, path: string, sid: string): Promise<T> {
-      const res = await fetchFn(`${url}${path}`, { headers: { Cookie: `SID=${sid}` } });
+    async get<T>(url: string, path: string, cookie: string): Promise<T> {
+      const res = await fetchFn(`${url}${path}`, { headers: { Cookie: cookie } });
       if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}${path}`);
       return (await res.json()) as T;
     },
