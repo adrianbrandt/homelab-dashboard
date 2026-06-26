@@ -1,6 +1,6 @@
 services:
   dashboard:
-    image: ghcr.io/adrianbrandt/homelab-dashboard:0.3.0
+    image: ghcr.io/adrianbrandt/homelab-dashboard:0.4.1
     container_name: homelab-dashboard
     restart: unless-stopped
     environment:
@@ -8,7 +8,7 @@ services:
       PROMETHEUS_URL: http://prometheus:9090
       PORT: "3001"
       CONFIG_PATH: /config/config.yaml
-    # Secrets ({{SONARR_KEY}}/{{RADARR_KEY}}/{{ADGUARD_PASS}}) — box-only, NOT committed, NOT rsynced.
+    # Secrets (SONARR_KEY/RADARR_KEY/PROWLARR_KEY/OVERSEERR_KEY/PLEX_TOKEN/QBIT_PASS/ADGUARD_PASS) — box-only, NOT committed.
     env_file:
       - .env
     volumes:
